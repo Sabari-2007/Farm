@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile - FarmEasy</title>
+  <link rel="icon" type="image/jpeg" href="Assets/cropped-Gemini_Generated_Image_1z5ej21z5ej21z5e-removebg-preview.png">
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; display:flex; background:#fffaf0; color:#333; }
+    .sidebar { width:220px; background:#2c3e50; color:white; height:100vh; padding-top:20px; display:flex; flex-direction:column; position:fixed; }
+    .sidebar h2 { text-align:center; margin-bottom:30px; }
+    .sidebar button { background:none; border:none; color:white; padding:12px 20px; text-align:left; cursor:pointer; font-size:16px; transition:0.3s; margin:4px 0; border-radius:6px; }
+    .sidebar button:hover { background:#27ae60; padding-left:30px; }
+    .content { margin-left:240px; flex:1; padding:20px; }
+    header { background:linear-gradient(to right, #34495e, rgb(166, 173, 209)); color:white; padding:15px; text-align:center; font-size:24px; font-weight:bold; border-radius:8px; }
+    .profile-container { margin-top:30px; max-width:600px; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1); }
+    .profile-container h3 { margin-bottom:20px; color:#34495e; }
+    .profile-item { margin-bottom:12px; font-size:18px; }
+    .profile-label { font-weight:bold; color:#2c3e50; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <button onclick="navigateTo('home.html', this)">Price Prediction</button>
+    <button onclick="navigateTo('disease.html', this)">Disease Prediction</button>
+    <button onclick="navigateTo('Market place.html', this)">Market Place</button>
+    <button onclick="navigateTo('Scheme.html', this)">Schemes</button>
+    <button onclick="navigateTo('profile.html', this)">Profile</button>
+  </div>
+
+  <div class="content">
+    <header>👤 User Profile</header>
+    <div class="profile-container" id="profileContainer">
+      <h3>Profile Details</h3>
+      <div class="profile-item"><span class="profile-label">Name:</span> <span id="profileName"></span></div>
+      <div class="profile-item"><span class="profile-label">Phone:</span> <span id="profilePhone"></span></div>
+      <div class="profile-item"><span class="profile-label">Region:</span> <span id="profileAddress"></span></div>
+      <div class="profile-item"><span class="profile-label">Soil Type:</span> <span id="profileSoil"></span></div>
+      <div class="profile-item"><span class="profile-label">Username:</span> <span id="profileEmail"></span></div>
+    </div>
+  </div>
+
+  <script>
+    function navigateTo(page, btn){
+      document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      window.location.href = page;
+    }
+
+    // Load user data from localStorage
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if(userData){
+      document.getElementById("profileName").innerText = userData.name || "N/A";
+      document.getElementById("profilePhone").innerText = userData.phone || "N/A";
+      document.getElementById("profileAddress").innerText = userData.address || "N/A";
+      document.getElementById("profileSoil").innerText = userData.soilType || "N/A";
+      document.getElementById("profileEmail").innerText = userData.email || "N/A";
+    } else {
+      document.getElementById("profileContainer").innerHTML = "<p>No profile data found. Please register first.</p>";
+    }
+  </script>
+</body>
+</html>

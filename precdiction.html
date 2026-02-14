@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yield Prediction — FarmEasy</title>
+  <style>
+    :root{--accent:#2b8aef;--bg:#f7f9fc;--card:#ffffff}
+    body{font-family:Inter,system-ui,-apple-system,Arial; background:var(--bg); margin:0; color:#111; display:flex}
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      height: 100vh;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, padding-left 0.3s;
+      margin: 4px 0;
+      border-radius: 6px;
+    }
+    .sidebar button:hover {
+      background: #27ae60;
+      padding-left: 30px;
+    }
+    .container{max-width:980px;margin:0 auto;padding:28px;flex:1}
+    .content {
+      margin-left: 220px;
+      flex: 1;
+    }
+    header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(16,24,40,0.06);}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    label{font-size:13px;color:#444;margin-bottom:6px;display:block}
+    select,input{padding:10px;border-radius:8px;border:1px solid #e6e9ef;font-size:14px;min-width:160px}
+    button#predict{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;}
+    button#predict:hover{background:#3c8432;}
+    .circles{display:flex;gap:18px;justify-content:space-between;margin-top:18px}
+    .circle{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);box-shadow:0 6px 18px rgba(16,24,40,0.04)}
+    .round{width:120px;height:120px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#fff;border:6px solid #f0f3f8;font-weight:700;font-size:20px}
+    .label{margin-top:10px;font-size:13px;color:#666}
+    .result-meta{margin-top:10px;font-size:14px;color:#222}
+    .small{font-size:13px;color:#666}
+    footer{margin-top:12px;font-size:13px;color:#666}
+    @media(max-width:760px){.circles{flex-direction:column}.round{width:96px;height:96px}}
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2 data-translate="menu">Menu</h2>
+    <button onclick="navigateTo('home.html', this)">Price Prediction</button>
+    <button onclick="navigateTo('disease.html', this)">Disease Prediction</button>
+    <button onclick="navigateTo('Market place.html', this)">Market Place</button>
+    <button onclick="navigateTo('Scheme.html', this)">Schemes</button>
+    <button onclick="navigateTo('profile.html', this)">Profile</button>
+  </div>
+  <!-- Main Content -->
+  <div class="content">
+    <div class="container">
+      <header>
+        <h1>Yield & Price Predictor (Demo)</h1>
+      </header>
+      <div class="card">
+        <div class="row">
+          <div style="flex:1;min-width:180px">
+            <label for="district">Choose District</label>
+            <select id="district"></select>
+          </div>
+          <div style="flex:1;min-width:180px">
+            <label for="market">Choose Market</label>
+            <select id="market"></select>
+          </div>
+          <div style="flex:1;min-width:180px">
+            <label for="crop">Choose Crop / Vegetable</label>
+            <select id="crop"></select>
+          </div>
+          <div style="min-width:160px">
+            <label for="horizon">Predict horizon (days)</label>
+            <select id="horizon">
+              <option value="7">7 days</option>
+              <option value="30" selected>30 days</option>
+              <option value="60">60 days</option>
+              <option value="90">90 days</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <button id="predict">Predict</button>
+          <div style="align-self:center;margin-left:12px" class="small">
+            Prediction uses a simple trend-based projection from the provided last 3 days of market prices (demo).
+          </div>
+        </div>
+        <div id="output" style="margin-top:18px;display:none">
+          <div class="result-meta" id="meta"></div>
+          <div class="circles" id="circles">
+            <div class="circle">
+              <div class="round" id="minVal">-</div>
+              <div class="label">MIN</div>
+            </div>
+            <div class="circle">
+              <div class="round" id="medianVal">-</div>
+              <div class="label">MEDIAN</div>
+            </div>
+            <div class="circle">
+              <div class="round" id="maxVal">-</div>
+              <div class="label">MAX</div>
+            </div>
+          </div>
+          <footer id="note"></footer>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // --- Embedded CSV (last 3 days) ---
+    const csv = `date,market,vegetable,price_per_kg
+2025-09-18,Bhubaneswar,Onion Big,24.51
+2025-09-18,Bhubaneswar,Onion Small,48.28
+2025-09-18,Bhubaneswar,Tomato,26.73
+2025-09-18,Bhubaneswar,Green Chilli,47.43
+2025-09-18,Bhubaneswar,Beetroot,37.55
+2025-09-18,Bhubaneswar,Potato,25.47
+2025-09-18,Bhubaneswar,Raw Banana,8.39
+2025-09-18,Bhubaneswar,Amaranth Leaves,14.76
+2025-09-18,Bhubaneswar,Cabbage,33.84
+2025-09-18,Bhubaneswar,Cauliflower,59.97
+2025-09-18,Bhubaneswar,Ridge Gourd,35.36
+2025-09-18,Bhubaneswar,Cucumber,34.93
+2025-09-18,Bhubaneswar,Beans,44.16
+2025-09-18,Bhubaneswar,Bhindi,35.37
+2025-09-18,Bhubaneswar,Radish,18.88
+2025-09-18,Cuttack,Onion Big,24.22
+2025-09-18,Cuttack,Onion Small,40.79
+2025-09-18,Cuttack,Tomato,27.33
+2025-09-18,Cuttack,Green Chilli,46.1
+2025-09-18,Cuttack,Beetroot,33.71
+2025-09-18,Cuttack,Potato,23.93
+2025-09-18,Cuttack,Raw Banana,7.86
+2025-09-18,Cuttack,Amaranth Leaves,13.95
+2025-09-18,Cuttack,Cabbage,34.53
+2025-09-18,Cuttack,Cauliflower,54.01
+2025-09-18,Cuttack,Ridge Gourd,38.43
+2025-09-18,Cuttack,Cucumber,30.21
+2025-09-18,Cuttack,Beans,46.19
+2025-09-18,Cuttack,Bhindi,36.29
+2025-09-18,Cuttack,Radish,18.44
+2025-09-18,Koraput,Onion Big,23.25
+2025-09-18,Koraput,Onion Small,49.45
+2025-09-18,Koraput,Tomato,25.5
+2025-09-18,Koraput,Green Chilli,42.02
+2025-09-18,Koraput,Beetroot,37.19
+2025-09-18,Koraput,Potato,24.03
+2025-09-18,Koraput,Raw Banana,8.3
+2025-09-18,Koraput,Amaranth Leaves,15.67
+2025-09-18,Koraput,Cabbage,37.34
+2025-09-18,Koraput,Cauliflower,53.61
+2025-09-18,Koraput,Ridge Gourd,34.85
+2025-09-18,Koraput,Cucumber,34.21
+2025-09-18,Koraput,Beans,45.88
+2025-09-18,Koraput,Bhindi,35.93
+2025-09-18,Koraput,Radish,21.66
+2025-09-18,Baripada,Onion Big,26.86
+2025-09-18,Baripada,Onion Small,43.59
+2025-09-18,Baripada,Tomato,26.95
+2025-09-18,Baripada,Green Chilli,44.66
+2025-09-18,Baripada,Beetroot,37.69
+2025-09-18,Baripada,Potato,24.42
+2025-09-18,Baripada,Raw Banana,7.49
+2025-09-18,Baripada,Amaranth Leaves,14.24
+2025-09-18,Baripada,Cabbage,34.33
+2025-09-18,Baripada,Cauliflower,56.25
+2025-09-18,Baripada,Ridge Gourd,38.03
+2025-09-18,Baripada,Cucumber,30.25
+2025-09-18,Baripada,Beans,44.33
+2025-09-18,Baripada,Bhindi,35.8
+2025-09-18,Baripada,Radish,20.37
+2025-09-18,Bhawanipatna,Onion Big,24.13
+2025-09-18,Bhawanipatna,Onion Small,40.81
+2025-09-18,Bhawanipatna,Tomato,24.35
+2025-09-18,Bhawanipatna,Green Chilli,47.77
+2025-09-18,Bhawanipatna,Beetroot,37.5
+2025-09-18,Bhawanipatna,Potato,22.93
+2025-09-18,Bhawanipatna,Raw Banana,8.32
+2025-09-18,Bhawanipatna,Amaranth Leaves,14.53
+2025-09-18,Bhawanipatna,Cabbage,36.27
+2025-09-18,Bhawanipatna,Cauliflower,56.53
+2025-09-18,Bhawanipatna,Ridge Gourd,35.36
+2025-09-18,Bhawanipatna,Cucumber,33.1
+2025-09-18,Bhawanipatna,Beans,43.06
+2025-09-18,Bhawanipatna,Bhindi,37.0
+2025-09-18,Bhawanipatna,Radish,20.17
+2025-09-19,Bhubaneswar,Onion Big,23.5
+2025-09-19,Bhubaneswar,Onion Small,48.57
+2025-09-19,Bhubaneswar,Tomato,25.77
+2025-09-19,Bhubaneswar,Green Chilli,41.76
+2025-09-19,Bhubaneswar,Beetroot,37.13
+2025-09-19,Bhubaneswar,Potato,24.81
+2025-09-19,Bhubaneswar,Raw Banana,8.19
+2025-09-19,Bhubaneswar,Amaranth Leaves,16.4
+2025-09-19,Bhubaneswar,Cabbage,37.4
+2025-09-19,Bhubaneswar,Cauliflower,51.76
+2025-09-19,Bhubaneswar,Ridge Gourd,36.16
+2025-09-19,Bhubaneswar,Cucumber,32.12
+2025-09-19,Bhubaneswar,Beans,37.86
+2025-09-19,Bhubaneswar,Bhindi,34.93
+2025-09-19,Bhubaneswar,Radish,20.54
+2025-09-19,Cuttack,Onion Big,23.98
+2025-09-19,Cuttack,Onion Small,48.48
+2025-09-19,Cuttack,Tomato,24.34
+2025-09-19,Cuttack,Green Chilli,47.15
+2025-09-19,Cuttack,Beetroot,40.06
+2025-09-19,Cuttack,Potato,24.04
+2025-09-19,Cuttack,Raw Banana,8.05
+2025-09-19,Cuttack,Amaranth Leaves,14.49
+2025-09-19,Cuttack,Cabbage,31.7
+2025-09-19,Cuttack,Cauliflower,57.47
+2025-09-19,Cuttack,Ridge Gourd,39.22
+2025-09-19,Cuttack,Cucumber,30.48
+2025-09-19,Cuttack,Beans,38.04
+2025-09-19,Cuttack,Bhindi,33.87
+2025-09-19,Cuttack,Radish,21.08
+2025-09-19,Koraput,Onion Big,25.88
+2025-09-19,Koraput,Onion Small,47.63
+2025-09-19,Koraput,Tomato,23.43
+2025-09-19,Koraput,Green Chilli,44.57
+2025-09-19,Koraput,Beetroot,35.19
+2025-09-19,Koraput,Potato,22.9
+2025-09-19,Koraput,Raw Banana,7.69
+2025-09-19,Koraput,Amaranth Leaves,14.31
+2025-09-19,Koraput,Cabbage,37.95
+2025-09-19,Koraput,Cauliflower,50.01
+2025-09-19,Koraput,Ridge Gourd,37.2
+2025-09-19,Koraput,Cucumber,30.06
+2025-09-19,Koraput,Beans,37.82
+2025-09-19,Koraput,Bhindi,37.35
+2025-09-19,Koraput,Radish,19.02
+2025-09-19,Baripada,Onion Big,26.25
+2025-09-19,Baripada,Onion Small,46.6
+2025-09-19,Baripada,Tomato,24.1
+2025-09-19,Baripada,Green Chilli,49.69
+2025-09-19,Baripada,Beetroot,37.93
+2025-09-19,Baripada,Potato,22.85
+2025-09-19,Baripada,Raw Banana,8.07
+2025-09-19,Baripada,Amaranth Leaves,16.08
+2025-09-19,Baripada,Cabbage,36.38
+2025-09-19,Baripada,Cauliflower,56.22
+2025-09-19,Baripada,Ridge Gourd,34.87
+2025-09-19,Baripada,Cucumber,32.03
+2025-09-19,Baripada,Beans,42.39
+2025-09-19,Baripada,Bhindi,35.84
+2025-09-19,Baripada,Radish,20.2
+2025-09-19,Bhawanipatna,Onion Big,25.56
+2025-09-19,Bhawanipatna,Onion Small,48.35
+2025-09-19,Bhawanipatna,Tomato,27.38
+2025-09-19,Bhawanipatna,Green Chilli,45.91
+2025-09-19,Bhawanipatna,Beetroot,34.67
+2025-09-19,Bhawanipatna,Potato,25.87
+2025-09-19,Bhawanipatna,Raw Banana,7.5
+2025-09-19,Bhawanipatna,Amaranth Leaves,15.93
+2025-09-19,Bhawanipatna,Cabbage,32.26
+2025-09-19,Bhawanipatna,Cauliflower,58.47
+2025-09-19,Bhawanipatna,Ridge Gourd,34.81
+2025-09-19,Bhawanipatna,Cucumber,31.6
+2025-09-19,Bhawanipatna,Beans,44.42
+2025-09-19,Bhawanipatna,Bhindi,35.44
+2025-09-19,Bhawanipatna,Radish,18.54
+2025-09-20,Bhubaneswar,Onion Big,22.98
+2025-09-20,Bhubaneswar,Onion Small,47.56
+2025-09-20,Bhubaneswar,Tomato,23.31
+2025-09-20,Bhubaneswar,Green Chilli,47.84
+2025-09-20,Bhubaneswar,Beetroot,35.59
+2025-09-20,Bhubaneswar,Potato,25.25
+2025-09-20,Bhubaneswar,Raw Banana,7.91
+2025-09-20,Bhubaneswar,Amaranth Leaves,13.99
+2025-09-20,Bhubaneswar,Cabbage,38.1
+2025-09-20,Bhubaneswar,Cauliflower,49.63
+2025-09-20,Bhubaneswar,Ridge Gourd,39.61
+2025-09-20,Bhubaneswar,Cucumber,33.24
+2025-09-20,Bhubaneswar,Beans,40.52
+2025-09-20,Bhubaneswar,Bhindi,39.22
+2025-09-20,Bhubaneswar,Radish,20.84
+2025-09-20,Cuttack,Onion Big,26.3
+2025-09-20,Cuttack,Onion Small,41.14
+2025-09-20,Cuttack,Tomato,22.81
+2025-09-20,Cuttack,Green Chilli,44.27
+2025-09-20,Cuttack,Beetroot,34.84
+2025-09-20,Cuttack,Potato,23.21
+2025-09-20,Cuttack,Raw Banana,8.47
+2025-09-20,Cuttack,Amaranth Leaves,13.78
+2025-09-20,Cuttack,Cabbage,37.71
+2025-09-20,Cuttack,Cauliflower,52.44
+2025-09-20,Cuttack,Ridge Gourd,34.53
+2025-09-20,Cuttack,Cucumber,29.14
+2025-09-20,Cuttack,Beans,39.77
+2025-09-20,Cuttack,Bhindi,36.61
+2025-09-20,Cuttack,Radish,20.94
+2025-09-20,Koraput,Onion Big,26.15
+2025-09-20,Koraput,Onion Small,46.26
+2025-09-20,Koraput,Tomato,22.81
+2025-09-20,Koraput,Green Chilli,44.5
+2025-09-20,Koraput,Beetroot,38.85
+2025-09-20,Koraput,Potato,23.66
+2025-09-20,Koraput,Raw Banana,8.5
+2025-09-20,Koraput,Amaranth Leaves,14.14
+2025-09-20,Koraput,Cabbage,34.78
+2025-09-20,Koraput,Cauliflower,55.38
+2025-09-20,Koraput,Ridge Gourd,37.53
+2025-09-20,Koraput,Cucumber,32.13
+2025-09-20,Koraput,Beans,41.35
+2025-09-20,Koraput,Bhindi,37.87
+2025-09-20,Koraput,Radish,18.41
+2025-09-20,Baripada,Onion Big,26.97
+2025-09-20,Baripada,Onion Small,43.16
+2025-09-20,Baripada,Tomato,24.27
+2025-09-20,Baripada,Green Chilli,48.73
+2025-09-20,Baripada,Beetroot,35.97
+2025-09-20,Baripada,Potato,23.12
+2025-09-20,Baripada,Raw Banana,8.55
+2025-09-20,Baripada,Amaranth Leaves,15.58
+2025-09-20,Baripada,Cabbage,37.63
+2025-09-20,Baripada,Cauliflower,58.18
+2025-09-20,Baripada,Ridge Gourd,41.47
+2025-09-20,Baripada,Cucumber,35.17
+2025-09-20,Baripada,Beans,41.51
+2025-09-20,Baripada,Bhindi,32.45
+2025-09-20,Baripada,Radish,18.05
+2025-09-20,Bhawanipatna,Onion Big,26.08
+2025-09-20,Bhawanipatna,Onion Small,41.8
+2025-09-20,Bhawanipatna,Tomato,24.23
+2025-09-20,Bhawanipatna,Green Chilli,42.69
+2025-09-20,Bhawanipatna,Beetroot,40.17
+2025-09-20,Bhawanipatna,Potato,21.89
+2025-09-20,Bhawanipatna,Raw Banana,8.6
+2025-09-20,Bhawanipatna,Amaranth Leaves,14.92
+2025-09-20,Bhawanipatna,Cabbage,38.46
+2025-09-20,Bhawanipatna,Cauliflower,53.28
+2025-09-20,Bhawanipatna,Ridge Gourd,34.85
+2025-09-20,Bhawanipatna,Cucumber,30.63
+2025-09-20,Bhawanipatna,Beans,38.01
+2025-09-20,Bhawanipatna,Bhindi,34.71
+2025-09-20,Bhawanipatna,Radish,21.63`;
+
+    // parse CSV
+    function parseCSV(text){
+      const lines = text.trim().split('\n');
+      const headers = lines.shift().split(',');
+      return lines.map(l=>{
+        const p = l.split(',');
+        const obj = {};
+        headers.forEach((h,i)=>obj[h]=p[i]);
+        obj.price_per_kg = parseFloat(obj.price_per_kg);
+        obj.date = new Date(obj.date);
+        return obj;
+      });
+    }
+
+    const data = parseCSV(csv);
+
+    // build metadata maps
+    const districts = Array.from(new Set(data.map(r => r.market.trim()))).sort();
+    const marketsByDistrict = {};
+    data.forEach(r=>{
+      const district = r.market.trim();
+      marketsByDistrict[district] = marketsByDistrict[district] || new Set();
+      marketsByDistrict[district].add(r.market.trim());
+    });
+
+    const crops = Array.from(new Set(data.map(r=>r.vegetable))).sort();
+
+    // populate dropdowns
+    const districtSel = document.getElementById('district');
+    const marketSel = document.getElementById('market');
+    const cropSel = document.getElementById('crop');
+
+    districts.forEach(d=>{
+      const opt = document.createElement('option'); opt.value = d; opt.textContent = d; districtSel.appendChild(opt);
+    });
+
+    function populateMarketsFor(d){
+      marketSel.innerHTML = '';
+      const arr = Array.from(marketsByDistrict[d]||[]).sort();
+      arr.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; marketSel.appendChild(o); });
+    }
+
+    districtSel.addEventListener('change',e=>populateMarketsFor(e.target.value));
+
+    crops.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; cropSel.appendChild(o); });
+
+    // init defaults
+    if(districtSel.options.length){ districtSel.selectedIndex = 0; populateMarketsFor(districtSel.value); }
+
+    // Prediction logic (simple trend projection using last 3 days)
+    function computePrediction(rows, horizonDays){
+      rows.sort((a,b)=>a.date-b.date);
+      const n = rows.length;
+      const last = rows[n-1];
+      if(n<2) return {median:last.price_per_kg, min:last.price_per_kg, max:last.price_per_kg};
+      const diffs = [];
+      for(let i=1;i<n;i++){
+        const days = (rows[i].date - rows[i-1].date)/(1000*60*60*24);
+        const changePerDay = (rows[i].price_per_kg - rows[i-1].price_per_kg)/Math.max(days,1);
+        diffs.push(changePerDay);
+      }
+      const trend = diffs.reduce((a,b)=>a+b,0)/diffs.length;
+      const mean = trend;
+      const variance = diffs.reduce((a,b)=>a+Math.pow(b-mean,2),0)/diffs.length;
+      const std = Math.sqrt(variance);
+      const median = last.price_per_kg + trend * horizonDays;
+      const min = median - Math.abs(std)*Math.sqrt(Math.max(horizonDays,1));
+      const max = median + Math.abs(std)*Math.sqrt(Math.max(horizonDays,1));
+      return {min: Math.max(0,round(min)), median: round(median), max: Math.max(0,round(max)), last: round(last.price_per_kg), trend:round(trend,3), std:round(std,3)};
+    }
+    function round(v,dec=2){ return Number(v.toFixed(dec)); }
+
+    document.getElementById('predict').addEventListener('click',()=>{
+      const district = districtSel.value;
+      const market = marketSel.value;
+      const crop = cropSel.value;
+      const horizon = parseInt(document.getElementById('horizon').value,10);
+      const rows = data.filter(r=>r.market===market && r.vegetable===crop);
+
+      if(rows.length===0){
+        alert('No data available for this selection in the provided dataset.');
+        return;
+      }
+
+      const pred = computePrediction(rows,horizon);
+      document.getElementById('output').style.display='block';
+      document.getElementById('meta').textContent = `${crop} at ${market} — Last observed price: ₹${pred.last} per kg. Projecting ${horizon} day(s) ahead.`;
+      document.getElementById('minVal').textContent = `₹${pred.min}`;
+      document.getElementById('medianVal').textContent = `₹${pred.median}`;
+      document.getElementById('maxVal').textContent = `₹${pred.max}`;
+      const today = rows[rows.length-1].date;
+      const target = new Date(today.getTime() + horizon*24*60*60*1000);
+      const targetStr = target.toLocaleDateString();
+      document.getElementById('note').textContent = `Estimated date after which these values may be reached: ${targetStr}. (Method: simple linear trend on last ${rows.length} days; use with caution.)`;
+    });
+
+    cropSel.selectedIndex = 0;
+    function navigateTo(page, btn){
+      document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      window.location.href = page;
+    }
+  </script>
+</body>
+</html>

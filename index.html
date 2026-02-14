@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title data-translate="title">FarmEasy</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="Assets/cropped-Gemini_Generated_Image_1z5ej21z5ej21z5e-removebg-preview.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      width: 320px;
+      text-align: center;
+      position: relative;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #218838;
+    }
+
+    .lang-menu {
+      position: fixed;
+      top: 12px;
+      right: 18px;
+      cursor: pointer;
+      font-size: 22px;
+      user-select: none;
+      padding: 6px;
+      border-radius: 6px;
+      background: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    .lang-menu:hover { transform: translateY(-1px); }
+
+    .lang-options {
+      display: none;
+      position: fixed;
+      top: 46px;
+      right: 18px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      z-index: 1000;
+      min-width: 140px;
+      overflow: hidden;
+    }
+
+    .lang-options div {
+      padding: 8px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .lang-options div:hover {
+      background: #f4f4f9;
+    }
+
+    @media (max-width: 420px) {
+      .form-container { width: 92%; padding: 18px; }
+      .lang-options { right: 8px; top: 52px; }
+      .lang-menu { right: 8px; top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Globe icon -->
+  <div class="lang-menu" id="langMenu" title="Change language">🌐</div>
+
+  <!-- Language options -->
+  <div class="lang-options" id="langOptions" aria-hidden="true">
+    <div data-lang="en">English</div>
+    <div data-lang="hi">हिन्दी</div>
+    <div data-lang="bn">বাংলা</div>
+    <div data-lang="mr">मराठी</div>
+    <div data-lang="te">తెలుగు</div>
+    <div data-lang="ta">தமிழ்</div>
+  </div>
+
+  <div class="form-container">
+    <h2 data-translate="registration">Registration</h2>
+
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Full Name" data-placeholder="fullname" required>
+      <input type="text" id="phone" placeholder="Mobile Number" data-placeholder="mobile" required>
+      <input type="text" id="address" placeholder="Region" data-placeholder="region" required>
+
+      <select id="soilType" required data-translate="soil_label" aria-label="Soil Type">
+        <option value="" data-translate="select_soil">Select Soil Type</option>
+        <option value="red" data-translate="red_soil">Red Soil</option>
+        <option value="black" data-translate="black_soil">Black Soil</option>
+        <option value="alluvial" data-translate="alluvial_soil">Alluvial Soil</option>
+        <option value="laterite" data-translate="laterite_soil">Laterite Soil</option>
+      </select>
+
+      <input type="text" id="email" placeholder="Username" data-placeholder="username" required>
+      <input type="password" id="password" placeholder="Password" data-placeholder="password" required>
+
+      <button type="submit" data-translate="register_btn">Register</button>
+    </form>
+  </div>
+
+  <script>
+    // Language translations
+    const translations = {
+      en: { title: "Registration", registration: "Registration", fullname: "Full Name", mobile: "Mobile Number", region: "Region", soil_label: "Soil Type", select_soil: "Select Soil Type", red_soil: "Red Soil", black_soil: "Black Soil", alluvial_soil: "Alluvial Soil", laterite_soil: "Laterite Soil", username: "Username", password: "Password", register_btn: "Register" },
+      hi: { title: "पंजीकरण", registration: "पंजीकरण", fullname: "पूरा नाम", mobile: "मोबाइल नंबर", region: "क्षेत्र", soil_label: "मिट्टी का प्रकार", select_soil: "मिट्टी का प्रकार चुनें", red_soil: "लाल मिट्टी", black_soil: "काली मिट्टी", alluvial_soil: "जलोढ़ मिट्टी", laterite_soil: "लेटेराइट मिट्टी", username: "उपयोगकर्ता नाम", password: "पासवर्ड", register_btn: "पंजीकरण करें" },
+      bn: { title: "নিবন্ধন", registration: "নিবন্ধন", fullname: "পুরো নাম", mobile: "মোবাইল নম্বর", region: "অঞ্চল", soil_label: "মাটির ধরন", select_soil: "মাটির ধরন নির্বাচন করুন", red_soil: "লাল মাটি", black_soil: "কালো মাটি", alluvial_soil: "পলিমাটি", laterite_soil: "ল্যাটেরাইট মাটি", username: "ব্যবহারকারীর নাম", password: "পাসওয়ার্ড", register_btn: "নিবন্ধন করুন" },
+      mr: { title: "नोंदणी", registration: "नोंदणी", fullname: "पूर्ण नाव", mobile: "मोबाइल क्रमांक", region: "प्रदेश", soil_label: "मातीचा प्रकार", select_soil: "मातीचा प्रकार निवडा", red_soil: "लाल माती", black_soil: "काळी माती", alluvial_soil: "गाळाची माती", laterite_soil: "लेटराइट माती", username: "वापरकर्तानाव", password: "पासवर्ड", register_btn: "नोंदणी करा" },
+      te: { title: "నమోదు", registration: "నమోదు", fullname: "పూర్తి పేరు", mobile: "మొబైల్ నంబర్", region: "ప్రాంతం", soil_label: "మట్టి రకం", select_soil: "మట్టి రకం ఎంచుకోండి", red_soil: "ఎరుపు మట్టి", black_soil: "నలుపు మట్టి", alluvial_soil: "అల్యూవియల్ మట్టి", laterite_soil: "లేటరైట్ మట్టి", username: "వినియోగదారుని పేరు", password: "పాస్వర్డ్", register_btn: "నమోదు చేయండి" },
+      ta: { title: "பதிவு", registration: "பதிவு", fullname: "முழு பெயர்", mobile: "கைபேசி எண்", region: "பிராந்தியம்", soil_label: "மண் வகை", select_soil: "மண் வகையை தேர்வு செய்யவும்", red_soil: "சிவப்பு மண்", black_soil: "கருப்பு மண்", alluvial_soil: "சரிவு மண்", laterite_soil: "கல்கரி மண்", username: "பயனர் பெயர்", password: "கடவுச்சொல்", register_btn: "பதிவு செய்க" }
+    };
+
+    // Language switcher
+    const langMenu = document.getElementById('langMenu');
+    const langOptions = document.getElementById('langOptions');
+
+    langMenu.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = langOptions.style.display === 'block';
+      langOptions.style.display = isOpen ? 'none' : 'block';
+      langOptions.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+    });
+
+    langOptions.addEventListener('click', e => {
+      const lang = e.target?.dataset?.lang;
+      if (lang) { setLanguage(lang); langOptions.style.display='none'; langOptions.setAttribute('aria-hidden','true'); }
+    });
+
+    document.addEventListener('click', e => {
+      if (!langMenu.contains(e.target) && !langOptions.contains(e.target)) {
+        langOptions.style.display='none'; langOptions.setAttribute('aria-hidden','true');
+      }
+    });
+
+    function setLanguage(lang){
+      const titleEl = document.querySelector('title[data-translate]');
+      if(titleEl && translations[lang][titleEl.getAttribute('data-translate')]) titleEl.textContent = translations[lang][titleEl.getAttribute('data-translate')];
+
+      document.querySelectorAll('[data-translate]').forEach(el=>{
+        const key = el.getAttribute('data-translate');
+        if(!key) return;
+        if(el.tagName==='SELECT'){
+          if(translations[lang][key]){ el.setAttribute('title', translations[lang][key]); el.setAttribute('aria-label', translations[lang][key]); }
+          return;
+        }
+        if(translations[lang][key]!==undefined) el.textContent = translations[lang][key];
+      });
+
+      document.querySelectorAll('option[data-translate]').forEach(opt=>{
+        const key = opt.getAttribute('data-translate');
+        if(translations[lang][key]!==undefined) opt.textContent = translations[lang][key];
+      });
+
+      document.querySelectorAll('[data-placeholder]').forEach(el=>{
+        const key = el.getAttribute('data-placeholder');
+        if(translations[lang][key]!==undefined) el.placeholder = translations[lang][key];
+      });
+
+      localStorage.setItem('lang', lang);
+    }
+
+    const savedLang = localStorage.getItem('lang') || 'en';
+    setLanguage(savedLang);
+
+    // Form submission
+    document.getElementById("registerForm").addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const userData = {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        soilType: document.getElementById("soilType").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+      };
+
+      localStorage.setItem("userData", JSON.stringify(userData));
+      alert("Registration successful!");
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

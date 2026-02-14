@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FarmEasy</title>
+  <link rel="icon" type="image/jpeg" href="Assets/cropped-Gemini_Generated_Image_1z5ej21z5ej21z5e-removebg-preview.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9fafc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      height: 100vh;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      text-align: left;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s, padding-left 0.3s;
+      margin: 4px 0;
+      border-radius: 6px;
+    }
+
+    .sidebar button:hover {
+      background: #27ae60; /* green hover */
+      padding-left: 30px;
+    }
+
+    .sidebar button.active {
+      background: #1abc9c;
+    }
+
+    /* Main content */
+    .main {
+      flex: 1;
+      padding: 20px;
+      margin-left: 220px; /* leave space for sidebar */
+      overflow-y: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    .category {
+      margin-bottom: 30px;
+    }
+
+    .category h2 {
+      color: #16a085;
+      border-left: 5px solid #16a085;
+      padding-left: 10px;
+    }
+
+    .scheme-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 30px 35px;
+      margin: 10px auto;
+      width: 100%;
+      max-width: 800px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .scheme-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .scheme-title {
+      font-weight: bold;
+      font-size: 16px;
+      color: #34495e;
+    }
+
+    .scheme-summary {
+      color: #555;
+      margin: 3px 0;
+      font-size: 14px;
+    }
+
+    .scheme-details {
+      display: none;
+      margin-top: 5px;
+      color: #333;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Menu</h2>
+    <button onclick="navigateTo('home.html', this)">Price Prediction</button>
+    <button onclick="navigateTo('disease.html', this)">Disease Prediction</button>
+    <button onclick="navigateTo('Market place.html', this)">Market Place</button>
+    <button onclick="navigateTo('Scheme.html', this)">Schemes</button>
+    <button onclick="navigateTo('profile.html', this)">Profile</button>
+  </div>
+
+  <div class="main">
+    <h1>🌱 Government Schemes for Farmers</h1>
+
+    <div class="category">
+      <h2>🌾 Agriculture</h2>
+      <!-- Tripura State Cooperative Bank -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Tripura State Cooperative Bank Limited (TSCB)</div>
+  <div class="scheme-summary">Bank services, Kisan Credit Card scheme & Farmers Club.</div>
+  <div class="scheme-details">
+    <p>
+      Information about the Tripura State Cooperative Bank Limited is provided.  
+      Users can find details on the bank, its services, branches, interest rates, insurance, loans, and rural development policies.  
+      Details about the <b>Kisan Credit Card scheme</b> and <b>Farmers Club</b> are also available.  
+    </p>
+  </div>
+</div>
+
+<!-- Gujarat Agri Marketing -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Director of Agriculture Marketing & Rural Finance, Gujarat</div>
+  <div class="scheme-summary">Management of Sub Mandi markets under Gujarat Agricultural Market Act 1963.</div>
+  <div class="scheme-details">
+    <p>
+      District headquarters and other major business locations cover <b>403 Sub Mandi markets</b>.  
+      These fall under the Gujarat Agricultural Market Act 1963 and are managed by Agricultural Market Committees.  
+      Farmers sell their produce in a regulated framework ensuring transparency.  
+    </p>
+  </div>
+</div>
+
+<!-- Farmers' Portal -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Farmers' Portal</div>
+  <div class="scheme-summary">A one-stop platform for agricultural information.</div>
+  <div class="scheme-details">
+    <p>
+      Managed by the Department of Agriculture, Co-operation & Farmers' Welfare.  
+      Farmers can access information on <b>insurance, storage, crops, extension activities, seeds, pesticides, machinery, fertilizers, market prices, welfare programmes, etc.</b>  
+    </p>
+  </div>
+</div>
+
+<!-- Innovation & Agri-entrepreneurship -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Innovation & Agri-entrepreneurship (RKVY)</div>
+  <div class="scheme-summary">Promoting innovation under Rashtriya Krishi Vikas Yojana.</div>
+  <div class="scheme-details">
+    <p>
+      Launched under the revamped <b>Rashtriya Krishi Vikas Yojana (RKVY)</b>, this programme supports <b>innovation and entrepreneurship</b> in agriculture to boost start-ups and modern agri-business ventures.  
+    </p>
+  </div>
+</div>
+
+<!-- Kisan eMitra -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Kisan-eMitra</div>
+  <div class="scheme-summary">A digital assistant for farmers.</div>
+  <div class="scheme-details">
+    <p>
+      Kisan-eMitra is an AI-driven digital assistant that provides answers to farmers in their <b>preferred language</b>, offering easy access to agriculture-related queries and guidance.  
+    </p>
+  </div>
+</div>
+
+<!-- Ministry of Agriculture -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Ministry of Agriculture & Farmers Welfare</div>
+  <div class="scheme-summary">Details on schemes, horticulture, drought management, and more.</div>
+  <div class="scheme-details">
+    <p>
+      The Ministry provides information on <b>schemes, horticulture, seeds, plant protection, drought management, vigilance, weather updates</b> and agricultural activities.  
+      Reports and policy details for farmers’ welfare are also available.  
+    </p>
+  </div>
+</div>
+
+<!-- Bihar Solar Energy Irrigation -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Bihar Saur Kranti Sinchai Yojana</div>
+  <div class="scheme-summary">Solar energy irrigation with 75% subsidy.</div>
+  <div class="scheme-details">
+    <p>
+      Farmers receive <b>solar pumps</b> for irrigation.  
+      <b>75% subsidy</b> is provided by the government, and farmers contribute the remaining <b>25%</b>.  
+    </p>
+  </div>
+</div>
+
+<!-- Bihar Rajya Fasal Sahayata Yojana -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Bihar Rajya Fasal Sahayata Yojana</div>
+  <div class="scheme-summary">Financial assistance during crop loss due to calamities.</div>
+  <div class="scheme-details">
+    <p>
+      Farmers receive <b>financial incentives</b> in case of crop loss due to natural calamities.  
+      During application, they must select the crops, mark sowing areas, and provide self-attested documents for verification.  
+    </p>
+  </div>
+</div>
+
+<!-- Bihar Diesel Grant -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Bihar Diesel Grant Scheme</div>
+  <div class="scheme-summary">Subsidy on diesel for irrigation.</div>
+  <div class="scheme-details">
+    <p>
+      The Bihar Government provides <b>subsidies on diesel</b> for farmers, reducing irrigation costs and supporting smallholder farmers.  
+    </p>
+  </div>
+</div>
+
+<!-- Karnataka Agricultural Credit -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Agricultural Credit (Karnataka)</div>
+  <div class="scheme-summary">Loans, Kisan Credit Cards, and SHGs.</div>
+  <div class="scheme-details">
+    <p>
+      Managed by the Department of Cooperation, Karnataka.  
+      Provides <b>short, medium, and long-term loans</b>, support for <b>Kisan Credit Cards</b>, and credit facilities for <b>Self Help Groups</b>.  
+    </p>
+  </div>
+</div>
+
+<!-- National Agri Infra Financing -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">National Agriculture Infra Financing Facility</div>
+  <div class="scheme-summary">Infrastructure funding for post-harvest value addition.</div>
+  <div class="scheme-details">
+    <p>
+      This facility develops <b>agriculture infrastructure</b> like storage, processing, and value addition systems.  
+      Aims to ensure <b>better prices</b> and fair deals for farmers.  
+    </p>
+  </div>
+</div>
+
+<!-- Minor Irrigation (Andaman & Nicobar) -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Minor Irrigation Schemes (Andaman & Nicobar)</div>
+  <div class="scheme-summary">Forms for pumpsets and ponds with subsidy options.</div>
+  <div class="scheme-details">
+    <p>
+      Farmers can download and apply for <b>pumpsets</b> on loan-cum-subsidy or cash-cum-subsidy basis.  
+      Application forms for <b>Minor Irrigation Ponds</b> under Shramdan-cum-Subsidy are also available.  
+    </p>
+  </div>
+</div>
+
+<!-- Haryana Agriculture Department -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Agriculture Department of Haryana</div>
+  <div class="scheme-summary">Schemes, soil conservation, and insurance support.</div>
+  <div class="scheme-details">
+    <p>
+      Information on <b>Sugar Development Scheme, Ground Water Cell Scheme, National Agricultural Insurance Scheme</b> and more.  
+      Provides <b>soil conservation, testing services</b>, and downloadable application forms for licenses.  
+    </p>
+  </div>
+</div>
+<!-- North Eastern Development Finance Corporation Ltd -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Website of North Eastern Development Finance Corporation Ltd</div>
+  <div class="scheme-summary">Financial assistance for enterprises and agri-allied projects in the North East.</div>
+  <div class="scheme-details">
+    <p>NEDFi provides financial assistance to micro, small, medium, and large enterprises for industrial, infrastructure, and agri-allied projects in the North Eastern Region. Also supports Microfinance through MFI or NGOs. Schemes include Rupee Term Loan, Equipment Finance, and Working Capital assistance.</p>
+  </div>
+</div>
+
+<!-- Coconut New Planting Subsidy -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Download application form for Coconut New Planting Subsidy (Andaman & Nicobar)</div>
+  <div class="scheme-summary">Subsidy support for coconut new planting.</div>
+  <div class="scheme-details">
+    <p>Form available from Department of Agriculture, Andaman & Nicobar Administration. Includes instructions and FAQs. Requires personal details such as name, address, phone number, and email ID.</p>
+  </div>
+</div>
+
+<!-- Puducherry Cooperative Department -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Website of Cooperative Department of Puducherry</div>
+  <div class="scheme-summary">Information on cooperative projects and societies in Puducherry.</div>
+  <div class="scheme-details">
+    <p>Provides details on projects, schemes, administrative setup, cooperative societies, and training. Includes Pondicherry Co-operative Societies Act 1972 & Rules 1973. Downloadable forms also available.</p>
+  </div>
+</div>
+
+<!-- Allahabad Bank -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Website of Allahabad Bank</div>
+  <div class="scheme-summary">Banking services and schemes for farmers and individuals.</div>
+  <div class="scheme-details">
+    <p>Offers educational loans, cash management, depository services, deposits, credit schemes, interest rates, mutual funds, pension schemes, Ayushman Bima Yojana, and regional MSME support.</p>
+  </div>
+</div>
+
+<!-- PM Kisan Maan-dhan Yojana -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Pradhan Mantri Kisan Maan-dhan Yojana</div>
+  <div class="scheme-summary">Pension scheme for small and marginal farmers.</div>
+  <div class="scheme-details">
+    <p>Voluntary and contributory pension scheme for landholding small and marginal farmers. Provides social security and financial stability after retirement age.</p>
+  </div>
+</div>
+
+<!-- Haryana State Cooperative Apex Bank -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Website of Haryana State Cooperative Apex Bank Ltd.</div>
+  <div class="scheme-summary">Information on HARCO bank services and schemes.</div>
+  <div class="scheme-details">
+    <p>Details available on HARCO branches, board of directors, training, deposit schemes, loans, service charges, fees, and interest rates.</p>
+  </div>
+</div>
+
+<!-- Haryana Loans and Advances -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Loans and Advances Schemes by Haryana Co-operation Department</div>
+  <div class="scheme-summary">Loan schemes for farmers and cooperatives in Haryana.</div>
+  <div class="scheme-details">
+    <p>Information about loan purposes, eligibility, loan amounts, repayment schedules, interest rates, and documentation. Related forms available for download.</p>
+  </div>
+</div>
+
+<!-- PM Fasal Bima Yojana -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Pradhan Mantri Fasal Bima Yojana</div>
+  <div class="scheme-summary">Government crop insurance scheme.</div>
+  <div class="scheme-details">
+    <p>Provides crop insurance integrating multiple stakeholders on a single platform. Aims to provide risk cover and financial support to farmers in case of crop loss.</p>
+  </div>
+</div>
+
+<!-- Co-operative Core Banking -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Website of Co-operative Core Banking Solution</div>
+  <div class="scheme-summary">Browser-based banking solution for cooperative banks.</div>
+  <div class="scheme-details">
+    <p>Supports SCBs, DCCBs, and PACS with centralized database repository. Provides information on cooperative banking operations across states and districts.</p>
+  </div>
+</div>
+
+<!-- NABARD -->
+<div class="scheme-card" onclick="toggleDetails(this)">
+  <div class="scheme-title">Website of National Bank for Agriculture and Rural Development (NABARD)</div>
+  <div class="scheme-summary">NABARD functions and agricultural support schemes.</div>
+  <div class="scheme-details">
+    <p>Offers details on NABARD’s credit, development, and promotional functions. Provides model projects, interest rates, subsidiaries, associates, and online application tracking with downloadable forms.</p>
+  </div>
+</div>
+
+
+    </div>
+  </div>
+
+  <script>
+    function toggleDetails(card) {
+      const details = card.querySelector(".scheme-details");
+      details.style.display = (details.style.display === "block") ? "none" : "block";
+    } 
+
+    function navigateTo(page, btn) {
+      document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      window.location.href = page; // navigation works now
+    }
+  </script>
+</body>
+</html>

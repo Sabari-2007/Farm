@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title data-translate="title">FarmEasy</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/jpeg" href="Assets/cropped-Gemini_Generated_Image_1z5ej21z5ej21z5e-removebg-preview.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      width: 320px;
+      text-align: center;
+      position: relative;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    /* Globe icon fixed top-right */
+    .lang-menu {
+      position: fixed;
+      top: 12px;
+      right: 18px;
+      cursor: pointer;
+      font-size: 22px;
+      user-select: none;
+      padding: 6px;
+      border-radius: 6px;
+      background: white;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    .lang-menu:hover { transform: translateY(-1px); }
+
+    /* Dropdown */
+    .lang-options {
+      display: none;
+      position: fixed;
+      top: 46px;
+      right: 18px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      z-index: 1000;
+      min-width: 140px;
+      overflow: hidden;
+    }
+
+    .lang-options div {
+      padding: 8px 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .lang-options div:hover {
+      background: #f4f4f9;
+    }
+
+    /* Small responsive tweak */
+    @media (max-width: 420px) {
+      .form-container { width: 92%; padding: 18px; }
+      .lang-options { right: 8px; top: 52px; }
+      .lang-menu { right: 8px; top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Globe icon -->
+  <div class="lang-menu" id="langMenu" title="Change language">🌐</div>
+
+  <!-- language choices -->
+  <div class="lang-options" id="langOptions" aria-hidden="true">
+    <div data-lang="en">English</div>
+    <div data-lang="hi">हिन्दी</div>
+    <div data-lang="bn">বাংলা</div>
+    <div data-lang="mr">मराठी</div>
+    <div data-lang="te">తెలుగు</div>
+    <div data-lang="ta">தமிழ்</div>
+  </div>
+
+  <div class="form-container">
+    <h2 data-translate="login_heading">Login</h2>
+    <form action="home.html">
+      <input type="text" placeholder="Username" data-placeholder="username" required>
+      <input type="password" placeholder="Password" data-placeholder="password" required>
+      <button type="submit" data-translate="login_btn">Login</button>
+    </form>
+  </div>
+
+  <script>
+    const translations = {
+      en: {
+        title: "Login",
+        login_heading: "Login",
+        username: "Username",
+        password: "Password",
+        login_btn: "Login"
+      },
+      hi: {
+        title: "लॉगिन",
+        login_heading: "लॉगिन",
+        username: "उपयोगकर्ता नाम",
+        password: "पासवर्ड",
+        login_btn: "लॉगिन करें"
+      },
+      bn: {
+        title: "লগইন",
+        login_heading: "লগইন",
+        username: "ব্যবহারকারীর নাম",
+        password: "পাসওয়ার্ড",
+        login_btn: "লগইন করুন"
+      },
+      mr: {
+        title: "लॉगिन",
+        login_heading: "लॉगिन",
+        username: "वापरकर्तानाव",
+        password: "पासवर्ड",
+        login_btn: "लॉगिन करा"
+      },
+      te: {
+        title: "లాగిన్",
+        login_heading: "లాగిన్",
+        username: "వినియోగదారుని పేరు",
+        password: "పాస్వర్డ్",
+        login_btn: "లాగిన్ చేయండి"
+      },
+      ta: {
+        title: "உள்நுழை",
+        login_heading: "உள்நுழை",
+        username: "பயனர் பெயர்",
+        password: "கடவுச்சொல்",
+        login_btn: "உள்நுழைக"
+      }
+    };
+
+    const langMenu = document.getElementById('langMenu');
+    const langOptions = document.getElementById('langOptions');
+
+    // Toggle dropdown
+    langMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = langOptions.style.display === 'block';
+      langOptions.style.display = isOpen ? 'none' : 'block';
+      langOptions.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
+    });
+
+    // Choose language
+    langOptions.addEventListener('click', (e) => {
+      const lang = e.target && e.target.dataset && e.target.dataset.lang;
+      if (lang) {
+        setLanguage(lang);
+        langOptions.style.display = 'none';
+        langOptions.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!langMenu.contains(e.target) && !langOptions.contains(e.target)) {
+        langOptions.style.display = 'none';
+        langOptions.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    // Translation function
+    function setLanguage(lang) {
+      // title
+      const titleEl = document.querySelector('title[data-translate]');
+      if (titleEl) {
+        const key = titleEl.getAttribute('data-translate');
+        if (translations[lang][key]) {
+          titleEl.textContent = translations[lang][key];
+        }
+      }
+
+      // elements
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (translations[lang][key]) {
+          el.textContent = translations[lang][key];
+        }
+      });
+
+      // placeholders
+      document.querySelectorAll('[data-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-placeholder');
+        if (translations[lang][key]) {
+          el.placeholder = translations[lang][key];
+        }
+      });
+
+      // save
+      localStorage.setItem('lang', lang);
+    }
+
+    // Init
+    const savedLang = localStorage.getItem('lang') || 'en';
+    setLanguage(savedLang);
+  </script>
+</body>
+</html>
